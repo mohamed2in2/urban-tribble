@@ -17,7 +17,7 @@ export const mockMovies = [
     year: 1972,
     rating: 9.2,
     genre: ["Crime", "Drama"],
-    poster: "https://image.tmdb.org/t/p/w500/3bhkrj58Vtu7enYsLeBHzone6C6.jpg",
+    poster: "https://tse4.mm.bing.net/th/id/OIP.nPq9pWwJy2eqFCaMXP9W3wHaLH?rs=1&pid=ImgDetMain&o=7&rm=3",
     overview:
       "Spanning the years 1945 to 1955, a chronicle of the fictional Italian-American Corleone crime family.",
     director: "Francis Ford Coppola",
@@ -143,7 +143,104 @@ export const mockMovies = [
     director: "Steven Spielberg",
     runtime: 195,
   },
+  {
+    id: 13,
+    title: "The Lord of the Rings: The Return of the King",
+    year: 2003,
+    rating: 9.0,
+    genre: ["Adventure", "Drama", "Fantasy"],
+    poster: "https://image.tmdb.org/t/p/w500/rCzpDGLbOoPwLjy3OAm5NUPOTrC.jpg",
+    overview:
+      "Gandalf and Aragorn lead the World of Men against Sauron's army while Frodo and Sam approach Mount Doom with the One Ring.",
+    director: "Peter Jackson",
+    runtime: 201,
+  },
+  {
+    id: 14,
+    title: "Parasite",
+    year: 2019,
+    rating: 8.5,
+    genre: ["Drama", "Thriller"],
+    poster: "https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg",
+    overview:
+      "Greed and class discrimination threaten the newly formed symbiotic relationship between a wealthy family and a poor one.",
+    director: "Bong Joon Ho",
+    runtime: 132,
+  },
+  {
+    id: 15,
+    title: "Whiplash",
+    year: 2014,
+    rating: 8.5,
+    genre: ["Drama"],
+    poster: "https://image.tmdb.org/t/p/w500/7fn624j5lj3xTme2SgiLCeuedmO.jpg",
+    overview:
+      "A promising young drummer enrolls at a cut-throat music conservatory where his dreams are mentored by an abusive instructor.",
+    director: "Damien Chazelle",
+    runtime: 106,
+  },
+  {
+    id: 16,
+    title: "The Prestige",
+    year: 2006,
+    rating: 8.5,
+    genre: ["Drama", "Mystery", "Sci-Fi"],
+    poster: "https://image.tmdb.org/t/p/w500/5MXyQfz8xUP3dIFPTubhTsbFY6N.jpg",
+    overview:
+      "After a tragic accident, two stage magicians engage in a bitter rivalry to create the ultimate illusion while sacrificing everything.",
+    director: "Christopher Nolan",
+    runtime: 130,
+  },
+  {
+    id: 17,
+    title: "Spirited Away",
+    year: 2001,
+    rating: 8.6,
+    genre: ["Adventure", "Animation", "Fantasy"],
+    poster: "https://image.tmdb.org/t/p/w500/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg",
+    overview:
+      "During her family's move to the suburbs, a sullen 10-year-old girl wanders into a world ruled by gods and witches.",
+    director: "Hayao Miyazaki",
+    runtime: 125,
+  },
+  {
+    id: 18,
+    title: "Dune: Part Two",
+    year: 2024,
+    rating: 8.6,
+    genre: ["Action", "Adventure", "Sci-Fi"],
+    poster: "https://image.tmdb.org/t/p/w500/6izwz7rsy95ARzTR3poZ8H6c5pp.jpg",
+    overview:
+      "Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators who destroyed his family.",
+    director: "Denis Villeneuve",
+    runtime: 166,
+  },
+  {
+    id: 19,
+    title: "Top Gun: Maverick",
+    year: 2022,
+    rating: 8.3,
+    genre: ["Action", "Drama"],
+    poster: "https://image.tmdb.org/t/p/w500/62HCnUTziyWcpDaBO2i1DX17ljH.jpg",
+    overview:
+      "After thirty years, Maverick is still pushing the envelope as a top naval aviator, but must confront ghosts of his past.",
+    director: "Joseph Kosinski",
+    runtime: 131,
+  },
+  {
+    id: 20,
+    title: "1917",
+    year: 2019,
+    rating: 8.2,
+    genre: ["Drama", "War"],
+    poster: "https://image.tmdb.org/t/p/w500/iZf0KyrE25z1sage4SYFLCCrMi9.jpg",
+    overview:
+      "Two young British soldiers are given an impossible mission to deliver a message deep in enemy territory during World War I.",
+    director: "Sam Mendes",
+    runtime: 119,
+  },
 ];
+
 
 export const genres = [
   "All",
@@ -152,8 +249,12 @@ export const genres = [
   "Biography",
   "Crime",
   "Drama",
+  "Fantasy",
   "History",
+  "Mystery",
   "Romance",
   "Sci-Fi",
   "Thriller",
+  "Animation",
+  "War",
 ];

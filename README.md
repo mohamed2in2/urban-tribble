@@ -26,6 +26,16 @@ npm run dev
 
 Open [http://localhost:5173](http://localhost:5173) in your browser.
 
+### Optional: Use TMDB API
+
+Create a local `.env` file in the project root and add:
+
+```bash
+VITE_TMDB_API_KEY=your_tmdb_api_key_here
+```
+
+If no API key is provided, the app automatically falls back to local mock movie data.
+
 ### Build for Production
 
 ```bash

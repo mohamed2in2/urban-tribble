@@ -1,11 +1,21 @@
+import { Link, NavLink } from "react-router-dom";
+
 function Header({ onLogoClick }) {
   return (
     <header className="header">
       <div className="header-inner">
-        <h1 className="logo" onClick={onLogoClick} role="button" tabIndex={0} onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && onLogoClick()}>
-          🎬 MovieApp
-        </h1>
-        <p className="tagline">Discover your next favourite film</p>
+        <Link className="logo" to="/" onClick={onLogoClick}>
+          🎬 MovieApp KC
+        </Link>
+        <p className="tagline">A hand-built movie shelf for late-night browsing</p>
+        <nav className="header-nav" aria-label="Main navigation">
+          <NavLink to="/" className={({ isActive }) => `nav-link${isActive ? " active" : ""}`} onClick={onLogoClick} end>
+            Home
+          </NavLink>
+          <NavLink to="/about" className={({ isActive }) => `nav-link${isActive ? " active" : ""}`}>
+            About
+          </NavLink>
+        </nav>
       </div>
     </header>
   );
