@@ -1,18 +1,34 @@
-import { useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Route, Routes } from "react-router-dom";
 import Header from "./components/Header";
-import SearchBar from "./components/SearchBar";
-import MovieGrid from "./components/MovieGrid";
-import MovieDetail from "./components/MovieDetail";
+import HomePage from "./pages/HomePage";
+import MoviePage from "./pages/MoviePage";
+import AboutPage from "./pages/AboutPage";
 import { mockMovies, genres } from "./data/mockMovies";
+import {
+  fetchTmdbGenres,
+  fetchTmdbMovies,
+  hasTmdbApiKey,
+} from "./services/tmdb";
 import "./App.css";
 
 function App() {
+  const tmdbEnabled = hasTmdbApiKey();
   const [query, setQuery] = useState("");
   const [selectedGenre, setSelectedGenre] = useState("All");
-  const [selectedMovie, setSelectedMovie] = useState(null);
   const [sortBy, setSortBy] = useState("rating");
+  const [movies, setMovies] = useState(mockMovies);
+  const [availableGenres, setAvailableGenres] = useState(genres);
+  const [genreIdByName, setGenreIdByName] = useState({});
+  const [genreNameById, setGenreNameById] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const filteredMovies = useMemo(() => {
+    if (tmdbEnabled) {
+      return movies;
+    }
+
     let result = mockMovies;
 
     if (query) {
@@ -37,64 +53,153 @@ function App() {
     });
 
     return result;
-  }, [query, selectedGenre, sortBy]);
+  }, [movies, query, selectedGenre, sortBy, tmdbEnabled]);
+
+  useEffect(() => {
+    if (!tmdbEnabled) {
+      return;
+    }
+
+    let cancelled = false;
+
+    const loadGenres = async () => {
+      try {
+        const tmdbGenres = await fetchTmdbGenres();
+        if (cancelled) return;
+
+        const byName = {};
+        const byId = {};
+        tmdbGenres.forEach((item) => {
+          byName[item.name] = item.id;
+          byId[item.id] = item.name;
+        });
+
+        setGenreIdByName(byName);
+        setGenreNameById(byId);
+        setAvailableGenres(["All", ...tmdbGenres.map((item) => item.name)]);
+      } catch {
+        if (!cancelled) {
+          setError("Could not load TMDB genres. Showing local movies.");
+        }
+      }
+    };
+
+    loadGenres();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [tmdbEnabled]);
+
+  useEffect(() => {
+    if (!tmdbEnabled) {
+      return;
+    }
+
+    let cancelled = false;
+
+    const loadMovies = async () => {
+      setIsLoading(true);
+      setError("");
+
+      try {
+        const selectedGenreId = selectedGenre === "All" ? null : genreIdByName[selectedGenre];
+        const tmdbMovies = await fetchTmdbMovies({
+          query,
+          selectedGenreId,
+          sortBy,
+          genreMap: genreNameById,
+        });
+
+        if (cancelled) return;
+        setMovies(tmdbMovies);
+      } catch {
+        if (!cancelled) {
+          setError("Could not fetch TMDB movies. Showing local movies.");
+          setMovies(mockMovies);
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadMovies();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [tmdbEnabled, query, selectedGenre, sortBy, genreIdByName, genreNameById]);
 
   const handleLogoClick = () => {
-    setSelectedMovie(null);
     setQuery("");
     setSelectedGenre("All");
+    setSortBy("rating");
   };
 
   return (
     <div className="app">
       <Header onLogoClick={handleLogoClick} />
 
-      {selectedMovie ? (
-        <main className="container">
-          <MovieDetail movie={selectedMovie} onBack={() => setSelectedMovie(null)} />
-        </main>
-      ) : (
-        <main className="container">
-          <div className="controls">
-            <SearchBar onSearch={setQuery} />
-            <div className="filters">
-              <select
-                className="sort-select"
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                aria-label="Sort movies"
-              >
-                <option value="rating">Sort by Rating</option>
-                <option value="year">Sort by Year</option>
-                <option value="title">Sort by Title</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="genre-filters">
-            {genres.map((genre) => (
-              <button
-                key={genre}
-                className={`genre-btn${selectedGenre === genre ? " active" : ""}`}
-                onClick={() => setSelectedGenre(genre)}
-              >
-                {genre}
-              </button>
-            ))}
-          </div>
-
-          <p className="results-count">
-            {filteredMovies.length} movie{filteredMovies.length !== 1 ? "s" : ""} found
-            {query ? ` for "${query}"` : ""}
-            {selectedGenre !== "All" ? ` in ${selectedGenre}` : ""}
-          </p>
-
-          <MovieGrid movies={filteredMovies} onMovieClick={setSelectedMovie} />
-        </main>
-      )}
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <HomePage
+              query={query}
+              setQuery={setQuery}
+              selectedGenre={selectedGenre}
+              setSelectedGenre={setSelectedGenre}
+              sortBy={sortBy}
+              setSortBy={setSortBy}
+              filteredMovies={filteredMovies}
+              availableGenres={availableGenres}
+              tmdbEnabled={tmdbEnabled}
+              isLoading={isLoading}
+              error={error}
+            />
+          }
+        />
+        <Route path="/movie/:movieId" element={<MoviePage tmdbEnabled={tmdbEnabled} movies={movies} />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route
+          path="*"
+          element={
+            <main className="container">
+              <div className="no-results">
+                <p>Page not found.</p>
+              </div>
+            </main>
+          }
+        />
+      </Routes>
 
       <footer className="footer">
-        <p>🎬 MovieApp — Built with React &amp; Vite</p>
+        <div className="footer-grid">
+          <section className="footer-block">
+            <h3>MovieApp KC</h3>
+            <p>A small movie shelf made to feel useful, calm, and a little more personal than a plain list.</p>
+          </section>
+
+          <section className="footer-block">
+            <h3>Credits</h3>
+            <p>Project build: MovieApp KC</p>
+            <p>Movie data: TMDB API plus a local fallback set</p>
+            <p>Links: Amazon Prime Video, IMDb, and YouTube trailer previews</p>
+          </section>
+
+          <section className="footer-block">
+            <h3>Contact</h3>
+            <p>Email: ahmedehab2n5@gmail.com</p>
+            <p>Phone: +201101670389</p>
+          </section>
+
+          <section className="footer-block footer-copy">
+            <p>© 2026 MovieApp KC. All rights reserved.</p>
+            <p>Made with React, Vite, and TMDB.</p>
+          </section>
+        </div>
       </footer>
     </div>
   );

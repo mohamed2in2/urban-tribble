@@ -4,7 +4,7 @@ function MovieGrid({ movies, onMovieClick }) {
   if (movies.length === 0) {
     return (
       <div className="no-results">
-        <p>🎬 No movies found. Try a different search.</p>
+        <p>No matches yet. Try a different search or clear the filters.</p>
       </div>
     );
   }
